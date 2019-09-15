@@ -1,0 +1,23 @@
+{
+  "name": "re_chat",
+  "version": "1.0.0",
+  "description": "real time chat with node js and socket.io",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "gravatar": "^1.8.0",
+    "mongoose": "^5.7.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.3",
+    "jsonwebtoken": "^8.5.0",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "popper.js": "^1.15.0",
+    "validator": "^10.11.0"
+  }
+}
