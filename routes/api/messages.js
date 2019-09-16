@@ -8,6 +8,7 @@ const validateLoginInput = require('../../validation/login')
 
 
 const Message = require('../../models/Message')
+const User = require('../../models/User')
 const Conversation = require('../../models/Coversation')
 
 router.post('/:recieverId', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -19,43 +20,62 @@ router.post('/:recieverId', passport.authenticate('jwt', { session: false }), (r
             date: new Date()
         }
     )
+    if (!User.findById(req.user._id)) {
+        return res.json({ res: 'reciever not found' })
+    }
+
     // conversation.collection
     Conversation.findOne(
         {
-            recieverId: req.params.recieverId,
-            senderId: req.user._id
+            $or: [{
+                recieverId: req.user._id,
+                senderId: req.params.recieverId
+            }, {
+                recieverId: req.params.recieverId,
+                senderId: req.user._id
+            }]
         }
+
         , function (err, found) {
             if (!found) {
-                conversation.save(function (err, conversation) {
-                    if (err) return console.error('message not sent');
+                conversation.save(function (err, conv) {
+                    if (err) return console.error('conversation not sent');
+                    conversation = conv
 
-                    new Message({
-                        content: req.body.content,
-                        userId: req.user._id,
-                        recieverId: req.params.recieverId,
-                        converstaionId: conversation._id,
-                        date: new Date()
-                    }).save(
-                        function (err, message) {
-                            if (err) return console.error('message not sent');
-                            res.json({ message, conversation })
-                        }
-                    )
                 })
             } else {
-                console.log('found');
-                res.json({ conversation })
-
+                conversation = found
             }
-        });
+
+            console.log(conversation);
+            new Message({
+                content: req.body.content,
+                userId: req.user._id,
+                recieverId: req.params.recieverId,
+                conversationId: conversation._id,
+                date: new Date()
+            }).save(
+                function (err, message) {
+                    if (err) return console.error('message not sent');
+                    res.json({ message, conversation })
+                }
+            )
+
+
+
+        }
+    );
 
 })
 
-router.get('/:userId', (req, res) => {
-    return res.json({
-        recieverId: 'gooood'
-    })
+router.get('/:conversationId', (req, res) => {
+
+    conversationId = req.params.conversationId;
+    Message.find(
+        { conversationId: conversationId }
+        , function (err, messages) {
+            return res.json({ messages })
+        })
 })
 
 module.exports = router

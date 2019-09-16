@@ -20,7 +20,7 @@ const MessageSchema = new Schema({
         required: true,
         ref: 'users'
     },
-    converstaionId: {
+    conversationId: {
         type: Schema.Types.ObjectId,
         required: true,
     },
