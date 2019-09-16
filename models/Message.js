@@ -20,6 +20,10 @@ const MessageSchema = new Schema({
         required: true,
         ref: 'users'
     },
+    converstaionId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+    },
     date :{
         type: Date,
         default : Date.now()
